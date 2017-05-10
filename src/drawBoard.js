@@ -14,14 +14,14 @@ class DrawBoard {
     this.lastTime = 0;  //画笔上次时间
     this.lastLineWidth = 0;   //画笔最近宽度
 
+    this.lastImg = "";  //最近一次签字
+
     this.init();
     //事件监听
     this.bindEvent();
   }
 
   init() {
-
-    // this.canvas.setAttribute('width', this.canvas.parentNode.clientWidth);    //将画布等同于父元素宽度
     this.context.lineCap = 'round';             //平滑处理
     this.context.lineJoin = 'round';            //平滑处理
     this.lineWidthMax = 3;   //画笔最粗值
@@ -32,28 +32,47 @@ class DrawBoard {
   clear() {
     this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
   }
-  save(_callback) {
+
+  cancel() {
+    this.context.putImageData(this.lastImg, 0, 0);
+  }
+
+  /**
+   * 保存签名图片
+   * @param type 保存类型
+   * @param _callback
+   */
+  save(type, _callback) {
+    // 未签字返回 false
     if(!this.lastX) {
-      return false;
+      console.log('null');
+      if(_callback) _callback(false);
+      return;
     }
-    //将签名后的canvas存为图片
-    var oldUrl = this.canvas.toDataURL();
-    var img = new Image();
-    img.src = oldUrl;
-    document.getElementById("test").appendChild(img);
 
-    //用9参数的drawImage方法对图片进行裁减
-    var canvas2 = document.createElement('canvas');
-    var context2 = canvas2.getContext('2d');
+    if(type == "only-draw") {
+      //将签名后的canvas存为图片
+      var oldUrl = this.canvas.toDataURL("image/png");
+      var img = new Image();
+      img.src = oldUrl;
 
-    img.onload = () => {
-      var Coordinate = this._getImgCoordinate();
-      canvas2.setAttribute('width', Coordinate.width);
-      canvas2.setAttribute('height', Coordinate.height);
-      context2.drawImage(img, Coordinate.minX, Coordinate.minY, Coordinate.width, Coordinate.height, 0, 0, Coordinate.width, Coordinate.height);
-      var newUrl = canvas2.toDataURL("image/png");
-      if(_callback) _callback(newUrl);
+      //用9参数的drawImage方法对图片进行裁减
+      var canvas2 = document.createElement('canvas');
+      var context2 = canvas2.getContext('2d');
+
+      img.onload = () => {
+        var Coordinate = this._getImgCoordinate();
+        canvas2.setAttribute('width', Coordinate.width);
+        canvas2.setAttribute('height', Coordinate.height);
+        context2.drawImage(img, Coordinate.minX, Coordinate.minY, Coordinate.width, Coordinate.height, 0, 0, Coordinate.width, Coordinate.height);
+        var newUrl = canvas2.toDataURL("image/png");
+        if(_callback) _callback(newUrl);
+      }
+    } else {
+      var url = this.canvas.toDataURL("image/png");
+      if(_callback) _callback(url);
     }
+
 
   }
 
@@ -124,6 +143,8 @@ class DrawBoard {
       this.lastTime = new Date().getTime();
       //设置落笔的最近线条宽度 lastWidth
       this.lastLineWidth = this.lineWidthMax /2;
+
+      this.lastImg = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);    //保留最近一次
     }
     writing(co) {
       var curTime = new Date().getTime(); //获取当前时间戳（毫秒级）
@@ -225,4 +246,4 @@ class DrawBoard {
 
 
 
-export default DrawBoard;
+module.exports =  DrawBoard;

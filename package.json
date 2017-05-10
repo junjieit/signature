@@ -1,0 +1,32 @@
+{
+  "name": "signature",
+  "version": "1.0.0",
+  "description": "canvas 实现电子签名",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack -p --config webpack.config.js",
+    "server": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/junjieit/signature.git"
+  },
+  "keywords": [
+    "canvas",
+    "signature",
+    "签名"
+  ],
+  "author": "junjie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/junjieit/signature/issues"
+  },
+  "homepage": "https://github.com/junjieit/signature#readme",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^2.5.0",
+    "webpack-dev-server": "^2.4.5"
+  }
+}

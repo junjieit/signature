@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>电子签名</title>
+    <style type="text/css">
+        body{background-color: #efeff4;text-align: center;}
+        canvas{background-color: #FFF;}
+        button{padding:7px 15px;}
+    </style>
+</head>
+<body>
+  <div class="main">
+      <p class="title">电子签名区</p>
+      <canvas id="canvas" width="500" height="300"></canvas>
+      <div>
+        <button type="button" class="bt-warn" onclick="clearAll()">重签</button>
+        <button type="button" class="bt-default" onclick="cancelLast()">撤销</button>
+        <button type="button" class="bt-primary" onclick="save()">保存</button>
+      </div>
+  </div>
+</body>
+<script type="text/javascript" src="../build/drawBoard.min.js"></script>
+<script type="text/javascript">
+  var canvas = document.getElementById("canvas");
+  var drawBoard = new DrawBoard(canvas);  // 初始化
+
+  var clearAll = function() {
+    drawBoard.clear();
+  }
+
+  var cancelLast = function() {
+    drawBoard.cancel();
+  }
+
+  var save = function() {
+    drawBoard.save('only-draw', function(url) {
+      if(!url) {
+        alert("请先签字后再保存");
+        return;
+      } else {
+        console.log(url);
+      }
+    });
+  }
+
+</script>
+</html>
